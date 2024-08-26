@@ -145,7 +145,7 @@ This repository contains all the proposal regarding OP_NET and it's changelog.
 		"proposedBy": "str", (string) identity of the validator that proposed this epoch
 		"graffiti": "str", (string) (optional) custom graffiti set by the validator who proposed this epoch
 		"reward": n, (numeric) reward in WBTC collected in this epoch by the validator who proposed the best solution,
-		"validators": n, (numeric) amount of validators who accepted this epoch
+		"validators": n, (numeric) amount of validators (untrusted-permissionless) who accepted this epoch
 		"trustedValidators": string[], (identity of trusted validators who accepted this epoch)
 		"txCount": n, (numeric) amount of transactions in this epoch
 		"transactions": [...string], (array) list of OP_NET transaction hash included in this epoch, generated from partially signed PSBT
