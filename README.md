@@ -123,7 +123,7 @@ This repository contains all the proposal regarding OP_NET and it's changelog.
 
 ---
 
-## What's Coming After This Update?
+## OP_NET 1.1.1 (pre-alpha) - What's Coming After This Update?
 
 ### 1. New RPC Methods
 
