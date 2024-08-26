@@ -2,7 +2,7 @@
 
 This repository contains all the proposal regarding OP_NET and it's changelog.
 
-## OP_NET 1.0.89 - What's Coming in the Next OP_NET Update?
+## OP_NET 1.1.0 (pre-alpha) - What's Coming in the next OP_NET Update?
 
 ### 1. New RPC Methods
 
