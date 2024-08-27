@@ -111,10 +111,10 @@ This repository contains all the proposal regarding OP_NET and it's changelog.
 
 #### Runtime Breaking Changes:
 - **Renaming:**
-  - `callee` is now `from` (represents who sent the transaction).
+  - `callee` is now `origin` (represents who sent the transaction).
   - `caller` is now `sender` (represents the original sender).
 - **New Additions:**
-  - Solidity-like constructor method (`onContractInstantiate`).
+  - Solidity-like constructor method (`onInstantiated`).
   - OP_20 uses storage slots for defining constant properties, allowing deployment from a factory contract.
   - New `StoredBoolean` type added.
 
