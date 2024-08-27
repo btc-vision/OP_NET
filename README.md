@@ -1,4 +1,4 @@
-# OP_NET Proposal
+# OP_NET Upcoming Changes
 
 This repository contains all the proposal regarding OP_NET and it's changelog.
 
