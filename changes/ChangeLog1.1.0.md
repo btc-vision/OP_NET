@@ -1,4 +1,4 @@
-## OP_NET Runtime Breaking Changes Announcement
+## OP-VM & OP_NET Runtime Breaking Changes Announcement
 
 **🚨 Attention all OP_NET Developers! 🚨**
 
