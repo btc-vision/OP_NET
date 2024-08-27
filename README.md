@@ -4,7 +4,7 @@ This repository contains all the proposal regarding OP_NET and it's changelog.
 
 ## OP_NET 1.1.0 (pre-alpha) - What's Coming in the next OP_NET Update?
 
-### 1. New RPC Methods
+### 1. New RPC Methods [In Progress]
 
 #### Breaking Change: `btc_simulate`
 - **Overview:** The `btc_simulate` method has been significantly enhanced to support more complex simulations.
@@ -99,7 +99,7 @@ This repository contains all the proposal regarding OP_NET and it's changelog.
 - **New Parameter:** `includePendingBalance` added to the existing address and filterOrdinals parameters.
 - **Response:** Remains unchanged.
 
-### 2. Support for WebSockets
+### 2. Support for WebSockets [In Progress]
 - **Overview:** RPC methods can now be called via WebSocket for improved speed.
 - **Event Subscriptions:**
   1. On "block"
@@ -107,7 +107,7 @@ This repository contains all the proposal regarding OP_NET and it's changelog.
   3. On "epoch"
   4. On "nextBestEpoch"
 
-### 3. Contract Updates
+### 3. Contract Updates [✔️ Completed]
 
 #### Runtime Breaking Changes:
 - **Renaming:**
@@ -118,7 +118,7 @@ This repository contains all the proposal regarding OP_NET and it's changelog.
   - OP_20 uses storage slots for defining constant properties, allowing deployment from a factory contract.
   - New `StoredBoolean` type added.
 
-### 4. Pending UTXO Tracking
+### 4. Pending UTXO Tracking [In Progress]
 - **Feature:** OP_NET now tracks pending UTXOs.
 
 ---
