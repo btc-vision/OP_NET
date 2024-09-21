@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **State-Aware Parallelism** principle optimizes transaction processing in OPNet by leveraging parallel execution for independent transactions while ensuring proper handling of dependencies between transactions. This principle boosts performance without compromising the integrity of the system's state.
+The **State-Aware Parallelism** principle optimizes transaction processing in OPNet by leveraging parallel execution for independent transactions while ensuring proper handling of dependencies between transactions. This principle boosts performance without compromising the integrity of the system's state, and further optimizes transaction processing using promises and context blocking to await state availability before resuming execution.
 
 ## How It Works
 
@@ -31,29 +31,70 @@ The **State-Aware Parallelism** principle optimizes transaction processing in OP
 ### 6. Limitations
 - The system cannot parallelize transactions that **share state dependencies**. These must be processed in a specific order, limiting speed improvements for those particular transactions.
 
-## Why It Has to Be Like This
+## Handling Transaction Reverts Due to Missing State
 
-### 1. State Consistency and Integrity
-- **State dependency** must be handled carefully. If two transactions modify the same state, they must be processed sequentially to ensure the system maintains **correct state transitions**.
-- Without ensuring proper execution order for state-dependent transactions, inconsistencies and security vulnerabilities like **double spending** or **race conditions** could occur.
+### Why a Transaction May Revert Due to Missing State
+In **State-Aware Parallelism**, transactions misclassified as independent may revert if they rely on the state modified by another transaction. When the required state is not available, the dependent transaction reverts. This can cause state inconsistencies and performance degradation due to reprocessing.
 
-### 2. Concurrency for Performance
-- Transactions that do not depend on the same state can run in parallel without compromising state integrity. 
-- This takes advantage of **multicore processors**, allowing the system to process more transactions simultaneously and significantly reduce processing time.
+### Effects of a Transaction Revert
+- **State Integrity**: A reverted transaction indicates an undetected dependency, potentially compromising the system’s integrity.
+- **Execution Order**: Reverts highlight dependencies that should have been sequentially executed.
+- **Performance Costs**: Reverts lead to redundant computation, reducing efficiency gains from parallel execution.
 
-### 3. Efficiency Through Multithreading
-- **Multithreading** allows independent transactions to be distributed across multiple CPU cores, avoiding the bottleneck of single-threaded execution.
-- By doing this, OPNet can handle larger transaction loads and process blocks faster, resulting in **improved throughput** and better **scalability**.
+### Managing Reverts Due to Missing State
 
-### 4. Sequential Execution for Dependent Transactions
-- Transactions that depend on one another (e.g., those modifying the same smart contract state) **cannot** be run in parallel. These need to be processed sequentially to maintain the correct state flow.
-- Running dependent transactions in parallel could lead to **incorrect balances**, invalid contract outcomes, or **corrupted states**.
+#### 1. Dependency Re-evaluation and Transaction Reclassification
+- Upon detecting a revert, the system re-evaluates dependencies and reclassifies affected transactions as dependent. They are then added to the sequential execution queue.
 
-### 5. Maximizing Parallel Execution
-- The goal of **State-Aware Parallelism** is to maximize the number of **independent transactions** executed in parallel, reducing processing time while ensuring proper execution of **dependent transactions**.
-- By carefully identifying which transactions can run concurrently and which need to wait, OPNet optimizes performance without sacrificing accuracy.
+#### 2. Transaction Rollback and Re-execution
+- Reverted transactions are rolled back and re-executed after the missing state becomes available, ensuring proper processing.
 
-## Key Advantages
+#### 3. Speculative Execution with Checkpoints
+- Transactions can be speculatively executed with **checkpoints**, where the system verifies if a state conflict exists before committing changes. This avoids reverts and wasted computation.
+
+#### 4. Transaction Dependency Prediction Using Heuristics
+- Heuristics can be employed to predict transaction dependencies and prevent misclassification, minimizing reverts.
+
+## Optimizing Compute with Promises and Context Blocking
+
+### Asynchronous State Availability in Transaction Processing
+
+Using **promises** and **context blocking** in Rust threads, OPNet can pause the execution of dependent transactions until the required state becomes available, preventing reverts and redundant processing.
+
+### 1. Parallel Execution with Promise-Based State Awaiting
+- Independent transactions run in parallel across multiple threads.
+- Dependent transactions await state availability using promises:
+  - If the required state is unavailable, the transaction is paused using a promise.
+  - The system processes other transactions while the paused transaction waits.
+
+### 2. Context Blocking for Dependent Transactions
+- Dependent transactions use **context blocking** if they require an unavailable state:
+  - The transaction thread is paused without reverting or retrying, minimizing wasted computation.
+  - The thread resumes execution once the necessary state is updated.
+
+### 3. Non-Blocking Promises and Resumable Execution
+- The system uses **non-blocking promises** to monitor state availability:
+  - When the state becomes available, the promise is fulfilled, and the paused transaction resumes from where it left off.
+
+### 4. Sequential and Parallel Scheduling Hybrid
+- Independent transactions run in parallel across CPU cores.
+- Dependent transactions pause and resume dynamically based on state availability, ensuring optimal compute usage.
+
+### Example Scenario
+
+- **Transaction A** modifies the state of a smart contract.
+- **Transaction B**, which depends on the updated state from Transaction A, waits using a promise.
+- **Transaction C**, which is independent of both A and B, runs in parallel.
+- Once **Transaction A** completes, the promise for **Transaction B** is fulfilled, and **Transaction B** resumes execution without restarting.
+
+## Benefits of This Approach
+
+1. **Avoiding Costly Reverts**: Transactions pause and await state updates rather than reverting, reducing redundant computations.
+2. **Optimizing CPU Usage**: Dependent transactions do not consume CPU cycles while waiting, allowing better resource allocation.
+3. **Increased Throughput**: The system efficiently handles more transactions by minimizing delays caused by state dependencies.
+4. **Smoother Transaction Flow**: Reduced retries and reverts lead to smoother overall block processing.
+
+## Key Advantages of **State-Aware Parallelism**
 
 - **Optimized Performance**: Running independent transactions in parallel drastically reduces block processing time.
 - **Scalability**: As more CPU cores are available, OPNet can handle a larger transaction load.
@@ -66,4 +107,4 @@ The **State-Aware Parallelism** principle optimizes transaction processing in OP
 
 ## Conclusion
 
-The **State-Aware Parallelism** principle balances the need for **high transaction throughput** with the requirement for **state integrity**. By allowing independent transactions to run in parallel while ensuring that dependent transactions are processed in the correct order, OPNet achieves both **scalability** and **security**.
+The **State-Aware Parallelism** principle, combined with asynchronous state availability using promises and context blocking, optimizes OPNet’s transaction throughput by minimizing reverts, reducing redundant processing, and maximizing parallel execution where possible. This ensures OPNet is both **scalable** and **secure**, allowing for efficient, high-performance transaction processing in a decentralized environment.
