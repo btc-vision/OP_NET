@@ -39,34 +39,6 @@ When a blockchain runs transactions **one by one**, it processes them in a stric
 
 ---
 
-### Ethereum vs. Bitcoin Block Size and Transaction Limits
-
-#### **Ethereum’s Block Limit and Transaction Processing**
-- **Block Size**: Ethereum doesn’t have a fixed block size in terms of bytes like Bitcoin. Instead, it uses a **gas limit** to determine how many transactions can fit into a block. Each block can contain a finite number of transactions based on their complexity and gas usage.
-- **Transaction Throughput**: Due to the gas limit, Ethereum’s block size fluctuates depending on the types of transactions. Complex transactions (e.g., smart contract executions) consume more gas, reducing the number of transactions that can fit into a block.
-- **Block Time**: Ethereum's average block time is around **12-15 seconds**. However, even with this relatively fast block time, Ethereum can only process about **15-45 transactions per second (TPS)**, depending on network conditions.
-
-As transaction flux increases (for example, during popular NFT drops or DeFi activity), Ethereum struggles with **congestion**. High-demand periods lead to skyrocketing gas fees and delays, as each block can only handle a certain number of transactions based on its gas limit.
-
-#### **Bitcoin’s Block Size and Transaction Handling**
-- **Block Size**: Bitcoin uses a **4 MB block size** (post-SegWit), which determines how many transactions can fit into a block.
-- **Transaction Throughput**: A typical Bitcoin block can handle around **2,000-3,500 transactions**, depending on the transaction type. With a **block time of 10 minutes**, Bitcoin’s throughput is around **3-7 TPS**.
-- **Handling Increased Volume**: Bitcoin, despite its lower TPS, experiences fewer issues with extreme congestion because of its simpler transaction structure. However, during periods of high activity, such as market spikes, the mempool can fill up, causing **confirmation delays**.
-
----
-
-### Example (Fractal): Sequential Processing Challenges in High-Throughput Chains
-
-Fractal, with its **30-second block time**, is designed for much faster block production compared to Ethereum or Bitcoin. However, due to the rapid block times, processing transactions sequentially introduces significant challenges:
-
-- **Block Size**: Fractal’s block size is variable but limited by the fast block times, meaning there’s less room to handle a high number of transactions per block compared to chains with longer block times.
-- **High Transaction Volume**: With a fast block time and the potential for a high volume of transactions, Fractal may experience **transaction bottlenecks** if transactions are processed one by one.
-- **Sequential Processing and Scalability**: Despite the fast block production, running transactions sequentially severely limits the number of transactions Fractal can handle in each block. As transaction flux increases, the system can become **congested**, and the potential transaction volume will outgrow the network's ability to process them in real time.
-
-Fractal’s fast block time (30 seconds) amplifies the need for more efficient transaction processing. Without parallel processing, Fractal could face severe **backlogs**, leading to increased latency and unutilized block space.
-
----
-
 ## Comparative Analysis
 
 This analysis compares **Ethereum** with various blockchains that could theoretically support **OPNet** (Bitcoin, Fractal, Litecoin, Bellcoin). The focus is on the challenges each chain would face when processing compute-heavy OPNet transactions, assuming they take **100ms to 250ms** to compute.
