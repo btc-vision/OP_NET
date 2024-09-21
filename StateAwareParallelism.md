@@ -41,7 +41,7 @@ When a blockchain runs transactions **one by one**, it processes them in a stric
 
 ## Comparative Analysis
 
-This analysis compares **Ethereum** with various blockchains that could theoretically support **OPNet** (Bitcoin, Fractal, Litecoin, Bellcoin). The focus is on the challenges each chain would face when processing compute-heavy OPNet transactions, assuming they take **100ms to 250ms** to compute.
+This analysis compares **Ethereum** with various blockchains that could theoretically support **OPNet** (Bitcoin, Fractal, Litecoin, Bellscoin). The focus is on the challenges each chain would face when processing compute-heavy OPNet transactions, assuming they take **100ms to 250ms** to compute.
 
 ---
 
@@ -53,7 +53,7 @@ This analysis compares **Ethereum** with various blockchains that could theoreti
 | **Bitcoin**    | 4 MB (fixed)           | 10 minutes              | ~5-10 TPS                           | ~3,000-5,000 transactions                    | 600 seconds           | ~5-10 TPS                   | ~2-4 TPS                    |
 | **Fractal**    | Variable (3,000 txs)   | 30 seconds              | ~100 TPS                            | ~3,000 transactions                          | 30 seconds            | ~100 TPS                    | ~40 TPS                     |
 | **Litecoin**   | 4 MB (similar to BTC)  | 2.5 minutes             | ~13 TPS                             | ~2,000 transactions                          | 150 seconds           | ~13 TPS                     | ~8 TPS                      |
-| **Bellcoin**   | Variable (3,000 txs)   | 60 seconds              | ~50 TPS                             | ~3,000 transactions                          | 60 seconds            | ~50 TPS                     | ~20 TPS                     |
+| **Bellscoin**   | Variable (3,000 txs)   | 60 seconds              | ~50 TPS                             | ~3,000 transactions                          | 60 seconds            | ~50 TPS                     | ~20 TPS                     |
 
 ---
 
@@ -65,7 +65,7 @@ This analysis compares **Ethereum** with various blockchains that could theoreti
 | **Bitcoin**    | ~300-1,250 seconds                     | **Low to Medium**          | Long block time; low TPS; slow confirmation times                  | Very slow for smart contracts    | Moderate                         |
 | **Fractal**    | ~300-750 seconds                       | **High**                  | Fast block time; needs parallelism to avoid backlogs               | High throughput potential        | Critical                          |
 | **Litecoin**   | ~200-500 seconds                       | **Medium**                | Slower block time; moderate TPS; risk of delayed confirmations     | Limited throughput               | High                              |
-| **Bellcoin**   | ~300-750 seconds                       | **Medium**                | Block time manageable; parallelism needed for compute-heavy tasks  | High throughput potential        | High                              |
+| **Bellscoin**   | ~300-750 seconds                       | **Medium**                | Block time manageable; parallelism needed for compute-heavy tasks  | High throughput potential        | High                              |
 
 ---
 
@@ -76,7 +76,7 @@ This analysis compares **Ethereum** with various blockchains that could theoreti
 | **Bitcoin**    | ~5-10 TPS                                 | ~20-50 TPS                             | ~300-1,250 seconds                    | ~1-120 seconds                     | **Low**, but transactions confirm slowly    | **Moderate**   |
 | **Fractal**    | ~100 TPS                                  | ~300-500 TPS                           | ~300-750 seconds                      | ~1-25 seconds                     | **High**, severe backlogs likely            | **Low**      |
 | **Litecoin**   | ~13 TPS                                   | ~50-100 TPS                            | ~200-500 seconds                      | ~1-130 seconds                     | **Moderate**, risk of slow confirmations    | **Low**   |
-| **Bellcoin**   | ~50 TPS                                   | ~200-400 TPS                           | ~300-750 seconds                      | ~1-45 seconds                     | **Moderate**, congestion in high traffic    | **Low**         |
+| **Bellscoin**   | ~50 TPS                                   | ~200-400 TPS                           | ~300-750 seconds                      | ~1-45 seconds                     | **Moderate**, congestion in high traffic    | **Low**         |
 
 ---
 
