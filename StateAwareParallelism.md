@@ -1,8 +1,25 @@
 # OPNet Transaction Processing Optimization: **State-Aware Parallelism**
 
+## Managing Storage Slots in Smart Contracts: A Brief Introduction
+
+In smart contracts, storage slots are fundamental to how data is stored on-chain. Each contract has a unique storage space on the blockchain, where variables and state data are stored in a key-value mapping, typically referred to as **storage slots**. These slots are structured in a way that allows efficient retrieval and updates of state, which is critical for the correct functioning of smart contracts. You could see this as the RAM (Random Access Memory) of the blockchain.
+
 ## Overview
 
 The **State-Aware Parallelism** principle optimizes transaction processing in OPNet by leveraging parallel execution for independent transactions while ensuring proper handling of dependencies between transactions. This principle boosts performance without compromising the integrity of the system's state, and further optimizes transaction processing using promises and context blocking to await state availability before resuming execution.
+
+### **How Storage Slots Work in General**
+
+1. **Slot Allocation**: 
+   - Each state variable (e.g., a balance, a mapping, or an array) in a smart contract is assigned to a specific storage slot. These slots are essentially 256-bit (32-byte) chunks of data that can hold a single value or a reference to more complex data structures.
+   - The allocation of these slots is typically handled automatically by the compiler based on the order in which variables are declared in the contract. 
+
+2. **Mappings and Dynamic Data**:
+   - For more complex structures like mappings or arrays, the storage model becomes a bit more sophisticated. Mappings use a combination of the key and a hash of the slot’s base location to determine the storage position.
+   - Arrays and mappings have dynamic lengths, so their individual elements are accessed via hash computations that calculate the exact slot where each element resides.
+
+3. **Efficiency and Costs**:
+   - On blockchains like Ethereum, where every interaction with storage incurs a cost (measured in gas), efficient management of storage slots is critical. Reading and writing to storage are among the most expensive operations, so keeping the number of storage interactions low is a primary concern in smart contract design.
 
 ## How It Works
 
@@ -86,6 +103,26 @@ Using **promises** and **context blocking** in Rust threads, OPNet can pause the
 - **Transaction B**, which depends on the updated state from Transaction A, waits using a promise.
 - **Transaction C**, which is independent of both A and B, runs in parallel.
 - Once **Transaction A** completes, the promise for **Transaction B** is fulfilled, and **Transaction B** resumes execution without restarting.
+
+## Why It Works Like This
+
+1. **State Consistency and Integrity**
+   - **State-Aware Parallelism** ensures that transactions modifying or relying on the same state are processed in the correct order. This avoids inconsistencies, such as race conditions or double spending, ensuring that the blockchain’s state remains valid and reliable.
+   - By **awaiting state availability**, dependent transactions do not revert or retry. Instead, they are paused until the state they depend on becomes available, which minimizes wasted compute and preserves the blockchain’s integrity.
+
+2. **Concurrency for Performance**
+   - OPNet can safely execute independent transactions in parallel, which significantly reduces block processing time by maximizing the use of available CPU cores. This boosts the system’s throughput, handling more transactions per block.
+   - By allowing dependent transactions to wait on state without reverting, **State-Aware Parallelism** ensures no compute cycles are wasted retrying transactions that would otherwise fail.
+
+3. **Resource Efficiency with Promises and Context Blocking**
+   - Using **promises** and **context blocking** allows the system to free up resources while awaiting state changes. This ensures that CPU time is efficiently allocated to transactions that are ready to proceed, while dependent transactions only use resources when they can safely execute.
+   - This leads to improved scalability, allowing OPNet to handle a growing number of transactions while maintaining optimal performance.
+
+4. **Minimized Reverts and Optimized Throughput**
+   - Since transactions no longer need to revert when missing a required state, the overall execution flow becomes smoother. Fewer reverts mean less time spent rolling back changes and retrying, leading to better overall throughput and faster block processing.
+
+5. **Scalability**
+   - As the number of CPU cores or resources increases, the ability to handle more independent transactions in parallel grows. By ensuring that dependent transactions are processed efficiently and only when they are ready, the system can scale smoothly as network usage increases.
 
 ## Benefits of This Approach
 
