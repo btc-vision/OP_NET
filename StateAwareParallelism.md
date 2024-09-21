@@ -1,4 +1,4 @@
-# OPNet Transaction Processing Optimization: **State-Aware Parallelism**
+# OP_NET Transaction Processing Optimization: **State-Aware Parallelism**
 
 ## Managing Storage Slots in Smart Contracts: A Brief Introduction
 
@@ -6,13 +6,13 @@ In smart contracts, storage slots are fundamental to how data is stored on-chain
 
 ## Overview
 
-The **State-Aware Parallelism** principle optimizes transaction processing in OPNet by leveraging parallel execution for independent transactions while ensuring proper handling of dependencies between transactions. This principle boosts performance without compromising the integrity of the system's state, and further optimizes transaction processing using promises and context blocking to await state availability before resuming execution.
+The **State-Aware Parallelism** principle optimizes transaction processing in OP_NET by leveraging parallel execution for independent transactions while ensuring proper handling of dependencies between transactions. This principle boosts performance without compromising the integrity of the system's state, and further optimizes transaction processing using promises and context blocking to await state availability before resuming execution.
 
 ### **How Storage Slots Work in General**
 
 1. **Slot Allocation**: 
    - Each state variable (e.g., a balance, a mapping, or an array) in a smart contract is assigned to a specific storage slot. These slots are essentially 256-bit (32-byte) chunks of data that can hold a single value or a reference to more complex data structures.
-   - The allocation of these slots is typically handled automatically by the compiler based on the order in which variables are declared in the contract. 
+   - The allocation of these slots is typically handled automatically by the compiler based on the order in which variables are declared in the contract. As for OP_NET, developers must manage their storage slot. This opens a lot of customisation possibility.
 
 2. **Mappings and Dynamic Data**:
    - For more complex structures like mappings or arrays, the storage model becomes a bit more sophisticated. Mappings use a combination of the key and a hash of the slot’s base location to determine the storage position.
@@ -76,7 +76,7 @@ In **State-Aware Parallelism**, transactions misclassified as independent may re
 
 ### Asynchronous State Availability in Transaction Processing
 
-Using **promises** and **context blocking** in Rust threads, OPNet can pause the execution of dependent transactions until the required state becomes available, preventing reverts and redundant processing.
+Using **promises** and **context blocking** in Rust threads, OP_NET can pause the execution of dependent transactions until the required state becomes available, preventing reverts and redundant processing.
 
 ### 1. Parallel Execution with Promise-Based State Awaiting
 - Independent transactions run in parallel across multiple threads.
@@ -111,12 +111,12 @@ Using **promises** and **context blocking** in Rust threads, OPNet can pause the
    - By **awaiting state availability**, dependent transactions do not revert or retry. Instead, they are paused until the state they depend on becomes available, which minimizes wasted compute and preserves the blockchain’s integrity.
 
 2. **Concurrency for Performance**
-   - OPNet can safely execute independent transactions in parallel, which significantly reduces block processing time by maximizing the use of available CPU cores. This boosts the system’s throughput, handling more transactions per block.
+   - OP_NET can safely execute independent transactions in parallel, which significantly reduces block processing time by maximizing the use of available CPU cores. This boosts the system’s throughput, handling more transactions per block.
    - By allowing dependent transactions to wait on state without reverting, **State-Aware Parallelism** ensures no compute cycles are wasted retrying transactions that would otherwise fail.
 
 3. **Resource Efficiency with Promises and Context Blocking**
    - Using **promises** and **context blocking** allows the system to free up resources while awaiting state changes. This ensures that CPU time is efficiently allocated to transactions that are ready to proceed, while dependent transactions only use resources when they can safely execute.
-   - This leads to improved scalability, allowing OPNet to handle a growing number of transactions while maintaining optimal performance.
+   - This leads to improved scalability, allowing OP_NET to handle a growing number of transactions while maintaining optimal performance.
 
 4. **Minimized Reverts and Optimized Throughput**
    - Since transactions no longer need to revert when missing a required state, the overall execution flow becomes smoother. Fewer reverts mean less time spent rolling back changes and retrying, leading to better overall throughput and faster block processing.
@@ -134,7 +134,7 @@ Using **promises** and **context blocking** in Rust threads, OPNet can pause the
 ## Key Advantages of **State-Aware Parallelism**
 
 - **Optimized Performance**: Running independent transactions in parallel drastically reduces block processing time.
-- **Scalability**: As more CPU cores are available, OPNet can handle a larger transaction load.
+- **Scalability**: As more CPU cores are available, OP_NET can handle a larger transaction load.
 - **State Integrity**: Ensuring dependent transactions are processed sequentially maintains system security and consistency.
 
 ## Challenges
@@ -144,4 +144,4 @@ Using **promises** and **context blocking** in Rust threads, OPNet can pause the
 
 ## Conclusion
 
-The **State-Aware Parallelism** principle, combined with asynchronous state availability using promises and context blocking, optimizes OPNet’s transaction throughput by minimizing reverts, reducing redundant processing, and maximizing parallel execution where possible. This ensures OPNet is both **scalable** and **secure**, allowing for efficient, high-performance transaction processing in a decentralized environment.
+The **State-Aware Parallelism** principle, combined with asynchronous state availability using promises and context blocking, optimizes OP_NET’s transaction throughput by minimizing reverts, reducing redundant processing, and maximizing parallel execution where possible. This ensures OP_NET is both **scalable** and **secure**, allowing for efficient, high-performance transaction processing in a decentralized environment.
