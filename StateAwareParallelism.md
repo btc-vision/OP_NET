@@ -1,25 +1,126 @@
 # OP_NET Transaction Processing Optimization: **State-Aware Parallelism**
 
+## Navigation
+
+- [Managing Storage Slots in Smart Contracts](#managing-storage-slots-in-smart-contracts-a-brief-introduction)
+- [Sequential Transaction Processing and Its Impact](#sequential-transaction-processing-and-its-impact-with-increasing-transaction-flux)
+  - [Why Sequential Processing Becomes a Problem](#why-sequential-transaction-processing-becomes-a-problem)
+  - [Ethereum vs. Bitcoin Block Size and Transaction Limits](#ethereum-vs-bitcoin-block-size-and-transaction-limits)
+  - [Example (Fractal): Sequential Processing Challenges](#example-fractal-sequential-processing-challenges-in-high-throughput-chains)
+  - [Comparative Analysis](#comparative-analysis)
+  - [Why Sequential Processing Fails](#why-sequential-processing-fails-as-transaction-flux-increases)
+- [How State-Aware Parallelism Works](#how-it-works)
+  - [Handling Transaction Reverts Due to Missing State](#handling-transaction-reverts-due-to-missing-state)
+  - [Optimizing Compute with Promises and Context Blocking](#optimizing-compute-with-promises-and-context-blocking)
+- [Why It Works Like This](#why-it-works-like-this)
+- [Benefits of State-Aware Parallelism](#benefits-of-this-approach)
+- [Challenges](#challenges)
+- [Conclusion](#conclusion)
+
+---
+
 ## Managing Storage Slots in Smart Contracts: A Brief Introduction
 
 In smart contracts, storage slots are fundamental to how data is stored on-chain. Each contract has a unique storage space on the blockchain, where variables and state data are stored in a key-value mapping, typically referred to as **storage slots**. These slots are structured in a way that allows efficient retrieval and updates of state, which is critical for the correct functioning of smart contracts. You could see this as the RAM (Random Access Memory) of the blockchain.
 
-## Overview
+---
 
-The **State-Aware Parallelism** principle optimizes transaction processing in OP_NET by leveraging parallel execution for independent transactions while ensuring proper handling of dependencies between transactions. This principle boosts performance without compromising the integrity of the system's state, and further optimizes transaction processing using promises and context blocking to await state availability before resuming execution.
+## Sequential Transaction Processing and Its Impact with Increasing Transaction Flux
 
-### **How Storage Slots Work in General**
+### Why Sequential Transaction Processing Becomes a Problem
 
-1. **Slot Allocation**: 
-   - Each state variable (e.g., a balance, a mapping, or an array) in a smart contract is assigned to a specific storage slot. These slots are essentially 256-bit (32-byte) chunks of data that can hold a single value or a reference to more complex data structures.
-   - The allocation of these slots is typically handled automatically by the compiler based on the order in which variables are declared in the contract. As for OP_NET, developers must manage their storage slot. This opens a lot of customisation possibility.
+When a blockchain runs transactions **one by one**, it processes them in a strictly sequential manner. As the number of transactions (transaction flux) increases, the system must handle more transactions in a limited timeframe. Sequential processing introduces several key issues:
 
-2. **Mappings and Dynamic Data**:
-   - For more complex structures like mappings or arrays, the storage model becomes a bit more sophisticated. Mappings use a combination of the key and a hash of the slot’s base location to determine the storage position.
-   - Arrays and mappings have dynamic lengths, so their individual elements are accessed via hash computations that calculate the exact slot where each element resides.
+1. **Latency**: As transaction volume grows, the blockchain must process each transaction individually, leading to longer delays between when a transaction is submitted and when it is confirmed. This results in a **backlog** of unprocessed transactions, causing users to wait longer for confirmations.
 
-3. **Efficiency and Costs**:
-   - On blockchains like Ethereum, where every interaction with storage incurs a cost (measured in gas), efficient management of storage slots is critical. Reading and writing to storage are among the most expensive operations, so keeping the number of storage interactions low is a primary concern in smart contract design.
+2. **Scalability**: Sequential processing limits the blockchain’s ability to scale. With more transactions competing for the same block space, the network may struggle to keep up, making it unable to handle high throughput efficiently.
+
+3. **Resource Utilization**: In sequential processing, CPU and computational resources are underutilized. On modern multicore machines, many CPU cores remain idle while only one core processes a transaction at a time, leading to inefficient resource usage.
+
+---
+
+### Ethereum vs. Bitcoin Block Size and Transaction Limits
+
+#### **Ethereum’s Block Limit and Transaction Processing**
+- **Block Size**: Ethereum doesn’t have a fixed block size in terms of bytes like Bitcoin. Instead, it uses a **gas limit** to determine how many transactions can fit into a block. Each block can contain a finite number of transactions based on their complexity and gas usage.
+- **Transaction Throughput**: Due to the gas limit, Ethereum’s block size fluctuates depending on the types of transactions. Complex transactions (e.g., smart contract executions) consume more gas, reducing the number of transactions that can fit into a block.
+- **Block Time**: Ethereum's average block time is around **12-15 seconds**. However, even with this relatively fast block time, Ethereum can only process about **15-45 transactions per second (TPS)**, depending on network conditions.
+
+As transaction flux increases (for example, during popular NFT drops or DeFi activity), Ethereum struggles with **congestion**. High-demand periods lead to skyrocketing gas fees and delays, as each block can only handle a certain number of transactions based on its gas limit.
+
+#### **Bitcoin’s Block Size and Transaction Handling**
+- **Block Size**: Bitcoin uses a **4 MB block size** (post-SegWit), which determines how many transactions can fit into a block.
+- **Transaction Throughput**: A typical Bitcoin block can handle around **2,000-3,500 transactions**, depending on the transaction type. With a **block time of 10 minutes**, Bitcoin’s throughput is around **3-7 TPS**.
+- **Handling Increased Volume**: Bitcoin, despite its lower TPS, experiences fewer issues with extreme congestion because of its simpler transaction structure. However, during periods of high activity, such as market spikes, the mempool can fill up, causing **confirmation delays**.
+
+---
+
+### Example (Fractal): Sequential Processing Challenges in High-Throughput Chains
+
+Fractal, with its **30-second block time**, is designed for much faster block production compared to Ethereum or Bitcoin. However, due to the rapid block times, processing transactions sequentially introduces significant challenges:
+
+- **Block Size**: Fractal’s block size is variable but limited by the fast block times, meaning there’s less room to handle a high number of transactions per block compared to chains with longer block times.
+- **High Transaction Volume**: With a fast block time and the potential for a high volume of transactions, Fractal may experience **transaction bottlenecks** if transactions are processed one by one.
+- **Sequential Processing and Scalability**: Despite the fast block production, running transactions sequentially severely limits the number of transactions Fractal can handle in each block. As transaction flux increases, the system can become **congested**, and the potential transaction volume will outgrow the network's ability to process them in real time.
+
+Fractal’s fast block time (30 seconds) amplifies the need for more efficient transaction processing. Without parallel processing, Fractal could face severe **backlogs**, leading to increased latency and unutilized block space.
+
+---
+
+## Comparative Analysis
+
+This analysis compares **Ethereum** with various blockchains that could theoretically support **OPNet** (Bitcoin, Fractal, Litecoin, Bellcoin). The focus is on the challenges each chain would face when processing compute-heavy OPNet transactions, assuming they take **100ms to 250ms** to compute.
+
+---
+
+## Table 1: Blockchain Comparison - Block Size, Transaction Throughput, and Processing Capacity
+
+| **Blockchain**             | **Block Size**         | **Expected Block Time** | **Expected Transaction Throughput** | **Transaction Flux (Transactions Per Block)** | **Processing Window** | **Theoretical TPS (100ms)** | **Theoretical TPS (250ms)** |
+|----------------------------|------------------------|-------------------------|-------------------------------------|-----------------------------------------------|-----------------------|-----------------------------|-----------------------------|
+| **Ethereum**                | Variable (Gas limit)   | 12-15 seconds           | ~33-40 TPS                          | ~200-500 transactions                         | 3-10 seconds         | ~33-40 TPS                  | ~13-20 TPS                  |
+| **Bitcoin**    | 4 MB (fixed)           | 10 minutes              | ~5-10 TPS                           | ~3,000-5,000 transactions                    | 600 seconds           | ~5-10 TPS                   | ~2-4 TPS                    |
+| **Fractal**    | Variable (3,000 txs)   | 30 seconds              | ~100 TPS                            | ~3,000 transactions                          | 30 seconds            | ~100 TPS                    | ~40 TPS                     |
+| **Litecoin**   | 4 MB (similar to BTC)  | 2.5 minutes             | ~13 TPS                             | ~2,000 transactions                          | 150 seconds           | ~13 TPS                     | ~8 TPS                      |
+| **Bellcoin**   | Variable (3,000 txs)   | 60 seconds              | ~50 TPS                             | ~3,000 transactions                          | 60 seconds            | ~50 TPS                     | ~20 TPS                     |
+
+---
+
+## Table 2: Blockchain Comparison - Processing Time, Congestion Risk, and Scalability Challenges
+
+| **Blockchain**             | **Theoretical Maximum Processing Time** | **Congestion**            | **Challenges**                                                     | **Scalability Issues**           | **Parallelism Needs**             |
+|----------------------------|-----------------------------------------|---------------------------|--------------------------------------------------------------------|----------------------------------|----------------------------------|
+| **Ethereum**                | ~3-10 seconds                          | **High**                  | Short block time; gas spikes; heavy compute loads                  | Limited throughput               | Critical                          |
+| **Bitcoin**    | ~300-1,250 seconds                     | **Low to Medium**          | Long block time; low TPS; slow confirmation times                  | Very slow for smart contracts    | Moderate                         |
+| **Fractal**    | ~300-750 seconds                       | **High**                  | Fast block time; needs parallelism to avoid backlogs               | High throughput potential        | Critical                          |
+| **Litecoin**   | ~200-500 seconds                       | **Medium**                | Slower block time; moderate TPS; risk of delayed confirmations     | Limited throughput               | High                              |
+| **Bellcoin**   | ~300-750 seconds                       | **Medium**                | Block time manageable; parallelism needed for compute-heavy tasks  | High throughput potential        | High                              |
+
+---
+
+## Table 3: OPNet-Enabled Blockchains - Performance With and Without Parallel Processing
+
+| **Blockchain**             | **Theoretical TPS (Without Parallelism)** | **Theoretical TPS (With Parallelism)** | **Processing Time Without Parallelism** | **Processing Time With Parallelism** | **Impact on Congestion Without Parallelism** | **Impact on Congestion With Parallelism**   |
+|----------------------------|-------------------------------------------|----------------------------------------|----------------------------------------|-------------------------------------|----------------------------------------------|---------------------------------------------|
+| **Bitcoin**    | ~5-10 TPS                                 | ~20-50 TPS                             | ~300-1,250 seconds                    | ~50-300 seconds                     | **Low**, but transactions confirm slowly    | **Moderate**, improves confirmation times   |
+| **Fractal**    | ~100 TPS                                  | ~300-500 TPS                           | ~300-750 seconds                      | ~50-100 seconds                     | **High**, severe backlogs likely            | **Low**, parallelism prevents backlogs      |
+| **Litecoin**   | ~13 TPS                                   | ~50-100 TPS                            | ~200-500 seconds                      | ~30-100 seconds                     | **Moderate**, risk of slow confirmations    | **Low**, parallelism improves performance   |
+| **Bellcoin**   | ~50 TPS                                   | ~200-400 TPS                           | ~300-750 seconds                      | ~50-150 seconds                     | **Moderate**, congestion in high traffic    | **Low**, parallelism optimizes load         |
+
+---
+
+### Explanation of Table 3:
+
+1. **Theoretical TPS (Without/With Parallelism)**: This column shows the theoretical transaction processing speed, comparing blockchains with and without parallel processing.
+2. **Processing Time Without/With Parallelism**: This column compares the processing time for a block of OPNet transactions, both with and without parallelism.
+3. **Impact on Congestion Without/With Parallelism**: This highlights the expected congestion levels with or without parallelism when handling OPNet's compute-heavy load.
+
+---
+
+## Why Sequential Processing Fails as Transaction Flux Increases
+
+As transaction flux increases, running transactions sequentially creates bottlenecks. On blockchains like Ethereum and Bitcoin, this leads to slower confirmations and higher fees. On faster blockchains like Fractal, the issue is more pronounced because of the short block time (30 seconds), meaning there is even less room to handle high transaction volumes without parallel processing.
+
+---
 
 ## How It Works
 
@@ -48,6 +149,8 @@ The **State-Aware Parallelism** principle optimizes transaction processing in OP
 ### 6. Limitations
 - The system cannot parallelize transactions that **share state dependencies**. These must be processed in a specific order, limiting speed improvements for those particular transactions.
 
+---
+
 ## Handling Transaction Reverts Due to Missing State
 
 ### Why a Transaction May Revert Due to Missing State
@@ -71,6 +174,8 @@ In **State-Aware Parallelism**, transactions misclassified as independent may re
 
 #### 4. Transaction Dependency Prediction Using Heuristics
 - Heuristics can be employed to predict transaction dependencies and prevent misclassification, minimizing reverts.
+
+---
 
 ## Optimizing Compute with Promises and Context Blocking
 
@@ -104,6 +209,8 @@ Using **promises** and **context blocking** in Rust threads, OP_NET can pause th
 - **Transaction C**, which is independent of both A and B, runs in parallel.
 - Once **Transaction A** completes, the promise for **Transaction B** is fulfilled, and **Transaction B** resumes execution without restarting.
 
+---
+
 ## Why It Works Like This
 
 1. **State Consistency and Integrity**
@@ -124,6 +231,8 @@ Using **promises** and **context blocking** in Rust threads, OP_NET can pause th
 5. **Scalability**
    - As the number of CPU cores or resources increases, the ability to handle more independent transactions in parallel grows. By ensuring that dependent transactions are processed efficiently and only when they are ready, the system can scale smoothly as network usage increases.
 
+---
+
 ## Benefits of This Approach
 
 1. **Avoiding Costly Reverts**: Transactions pause and await state updates rather than reverting, reducing redundant computations.
@@ -131,16 +240,22 @@ Using **promises** and **context blocking** in Rust threads, OP_NET can pause th
 3. **Increased Throughput**: The system efficiently handles more transactions by minimizing delays caused by state dependencies.
 4. **Smoother Transaction Flow**: Reduced retries and reverts lead to smoother overall block processing.
 
+---
+
 ## Key Advantages of **State-Aware Parallelism**
 
 - **Optimized Performance**: Running independent transactions in parallel drastically reduces block processing time.
 - **Scalability**: As more CPU cores are available, OP_NET can handle a larger transaction load.
 - **State Integrity**: Ensuring dependent transactions are processed sequentially maintains system security and consistency.
 
+---
+
 ## Challenges
 
 - **State Dependency Detection**: Efficiently identifying dependencies between transactions is crucial for maximizing parallel execution.
 - **Concurrency Handling**: Proper concurrency management is essential to prevent race conditions or state conflicts when running transactions in parallel.
+
+---
 
 ## Conclusion
 
