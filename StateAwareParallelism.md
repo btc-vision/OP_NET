@@ -73,10 +73,10 @@ This analysis compares **Ethereum** with various blockchains that could theoreti
 
 | **Blockchain**             | **Theoretical TPS (Without Parallelism)** | **Theoretical TPS (With Parallelism)** | **Processing Time Without Parallelism** | **Processing Time With Parallelism** | **Impact on Congestion Without Parallelism** | **Impact on Congestion With Parallelism**   |
 |----------------------------|-------------------------------------------|----------------------------------------|----------------------------------------|-------------------------------------|----------------------------------------------|---------------------------------------------|
-| **Bitcoin**    | ~5-10 TPS                                 | ~20-50 TPS                             | ~300-1,250 seconds                    | ~50-300 seconds                     | **Low**, but transactions confirm slowly    | **Moderate**, improves confirmation times   |
-| **Fractal**    | ~100 TPS                                  | ~300-500 TPS                           | ~300-750 seconds                      | ~50-100 seconds                     | **High**, severe backlogs likely            | **Low**, parallelism prevents backlogs      |
-| **Litecoin**   | ~13 TPS                                   | ~50-100 TPS                            | ~200-500 seconds                      | ~30-100 seconds                     | **Moderate**, risk of slow confirmations    | **Low**, parallelism improves performance   |
-| **Bellcoin**   | ~50 TPS                                   | ~200-400 TPS                           | ~300-750 seconds                      | ~50-150 seconds                     | **Moderate**, congestion in high traffic    | **Low**, parallelism optimizes load         |
+| **Bitcoin**    | ~5-10 TPS                                 | ~20-50 TPS                             | ~300-1,250 seconds                    | ~1-120 seconds                     | **Low**, but transactions confirm slowly    | **Moderate**, improves confirmation times   |
+| **Fractal**    | ~100 TPS                                  | ~300-500 TPS                           | ~300-750 seconds                      | ~1-25 seconds                     | **High**, severe backlogs likely            | **Low**, parallelism prevents backlogs      |
+| **Litecoin**   | ~13 TPS                                   | ~50-100 TPS                            | ~200-500 seconds                      | ~1-130 seconds                     | **Moderate**, risk of slow confirmations    | **Low**, parallelism improves performance   |
+| **Bellcoin**   | ~50 TPS                                   | ~200-400 TPS                           | ~300-750 seconds                      | ~1-45 seconds                     | **Moderate**, congestion in high traffic    | **Low**, parallelism optimizes load         |
 
 ---
 
