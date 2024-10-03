@@ -118,7 +118,7 @@ This repository contains all the proposal regarding OP_NET and it's changelog.
   - OP_20 uses storage slots for defining constant properties, allowing deployment from a factory contract.
   - New `StoredBoolean` type added.
 
-### 4. Pending UTXO Tracking [In Progress]
+### 4. Pending UTXO Tracking [✔️ Completed]
 - **Feature:** OP_NET now tracks pending UTXOs.
 
 ---
