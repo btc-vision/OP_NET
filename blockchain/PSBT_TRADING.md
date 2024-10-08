@@ -52,7 +52,7 @@ The exchange is facilitated through smart contracts and PSBTs, ensuring that bot
 #### 1. Seller Initiates the Transaction
 
 - The seller sends a transaction to the PSBT management smart contract, depositing their tokens (e.g., 50,000 TOKENS).
-- This transaction is confirmed on the blockchain, locking the seller's tokens within the contract. This transaction include a dummy UTXO which prevent front-running attacks.
+- This transaction is confirmed on the blockchain, locking the seller's tokens within the contract. This transaction include a dummy UTXO which prevent front-running/double-spent attacks.
 
 #### 2. Seller Creates a PSBT
 
@@ -60,7 +60,7 @@ The seller generates a PSBT containing:
 
 - **OP_NET Interaction:** An instruction to the PSBT management contract to transfer a specified amount of tokens upon successful completion.
 - **Bitcoin Output:** An output directed to the seller's Bitcoin wallet, requesting a specific amount of satoshis (the BTC equivalent for the tokens offered).
-- **The dummy UTXO:** This UTXO is used to prevent front-running attacks. It gets generated when the seller send his tokens to the PSBT management contract. 
+- **The dummy UTXO:** This UTXO is used to prevent front-running/double-spent attacks. It gets generated when the seller send his tokens to the PSBT management contract. 
 
 #### 3. Buyer Participates in the PSBT
 
