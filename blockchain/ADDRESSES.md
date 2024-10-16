@@ -55,7 +55,7 @@ Despite the different address formats, all Bitcoin addresses ultimately originat
 
 Ethereum uses a different approach where accounts are directly associated with public keys.
 An Ethereum address is derived from the public key, just like bitcoin, and all transactions and contracts are tied to this address.
-At his core, Ethereum uses the same concept as Bitcoin in public key but only have one possible derivation path.
+At its core, Ethereum uses the same concept as Bitcoin in public key but only have one possible derivation path.
 
 For a detailed explanation, refer to [Ethereum Accounts Explained](https://asecuritysite.com/node/js_ethereum2).
 
