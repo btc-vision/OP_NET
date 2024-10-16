@@ -20,7 +20,7 @@ This README provides a comprehensive guide on this transition, including detaile
 3. [Understanding Taproot and Tweaked Keys](#understanding-taproot-and-tweaked-keys)
     - [Taproot Tweaked Keys](#taproot-tweaked-keys)
     - [Code Example: Tweaking a Public Key](#code-example-tweaking-a-public-key)
-4. [Address Representation in Contracts](#address-representation-in-contracts)
+4. [Address Representation](#address-representatioN)
     - [Using Uint8Array](#using-uint8array)
     - [Converting Tweaked Public Keys to Addresses](#converting-tweaked-public-keys-to-addresses)
     - [Code Example: Conversion Functions](#code-example-conversion-functions)
@@ -152,7 +152,7 @@ const tweakedPubKey = EcKeyPair.tweakPublicKey(compressedPubKey);
 ```
 ---
 
-## Address Representation in Contracts
+## Address Representation
 
 ### Using Uint8Array
 
