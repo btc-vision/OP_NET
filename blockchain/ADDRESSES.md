@@ -96,15 +96,15 @@ With the introduction of Taproot in Bitcoin, public keys are **tweaked** to enha
 
 - **Tweaking Process**: Involves combining the original public key with a hash of the key and optional data (e.g., scripts).
 - **Non-revocable Keys**: Tweaked keys cannot be reversed to obtain the original key, enhancing security.
-- **Formula**: The tweaked key $$ Q $$ is calculated as:
+- **Formula**: The tweaked key $\Q$ is calculated as:
 
   $$ Q = P + H(P||c) \cdot G $$
 
   Where:
-    - $$ P $$ is the original public key.
-    - $$ H $$ is a hash function.
-    - $$ c $$ is optional commitment data.
-    - $$ G $$ is the generator point on the elliptic curve.
+    - $\P$ is the original public key.
+    - $\H$ is a hash function.
+    - $\c$ is optional commitment data.
+    - $\G$ is the generator point on the elliptic curve.
 
 ### Code Example: Tweaking a Public Key
 
