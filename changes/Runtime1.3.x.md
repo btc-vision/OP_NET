@@ -95,16 +95,16 @@ Several new methods and classes have been added to `@btc-vision/transaction`. Th
 
 ---
 
-### Some Detailed Documentation...
+## Some Detailed Documentation...
 
-#### Key Concepts of the New Address Format
+### Key Concepts of the New Address Format
 
 - **Public Key-based Addresses**: The new format uses `Uint8Array` to represent addresses, derived from public keys.
 - **Unified Accounts**: The same public key can be used for multiple accounts, unifying account management.
 - **Validation**: You can validate addresses based on network (mainnet, testnet, etc.).
 - **Comparison**: Use methods like `equals`, `isBiggerThan`, and `isSmallerThan` for comparisons, rather than direct operators.
 
-#### Address Usage Examples
+### Address Usage Examples
 
 1. **Creating an Address from a Public Key**:
    ```typescript
