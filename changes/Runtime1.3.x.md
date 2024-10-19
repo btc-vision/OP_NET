@@ -253,7 +253,7 @@ Dead Address (Genesis Block): 0x284ae4acdb32a99ba3ebfa66a91ddb41a7b7a1d2fef41539
 
 ---
 
-### New Address Type for OP_NET Contracts
+## New Address Type for OP_NET Contracts
 
 With the recent upgrade, the OP_NET runtime for contracts now supports **public key-based addresses** represented as `Uint8Array`. This section covers advanced usage of the new `Address` type in contracts, explains how to use the optimized memory maps (`MultiAddressMemoryMap`, `AddressMemoryMap`, and `Uint8ArrayMerger`), and highlights the available features such as string interpolation and special addresses (e.g., the "dead" address).
 
