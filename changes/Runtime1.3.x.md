@@ -152,7 +152,7 @@ console.log(`MyAddress: ${address}`);
 
 This will output:
 ```
-MyAddress: 0x04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f
+MyAddress: 0x284ae4acdb32a99ba3ebfa66a91ddb41a7b7a1d2fef415399922cd8a04485c02
 ```
 
 The address is automatically formatted as a hexadecimal string prefixed with `0x` for readability and consistency across your outputs.
