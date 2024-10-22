@@ -296,28 +296,23 @@ This method, while useful in certain contexts, should be **avoided** in performa
 
 ### Important Note: Address Representation as Tweaked Compressed Public Keys
 
-In OP_NET, **addresses are represented as tweaked, compressed public keys without the first `02` or `03` prefix byte**. This is a **crucial distinction** from standard public key formats and must be fully understood when working with the new address system.
+In OP_NET, **addresses are represented as tweaked, compressed public keys**. This format is essential for compatibility with OP_NET contracts and ensures that addresses are correctly generated and validated for taproot-based transactions.
 
 #### Key Details:
 - **Tweaked Public Key**: The public key is **tweaked** during address generation, typically using a Taproot mechanism.
-- **Compressed Format**: Only the compressed part of the public key is used. Compressed public keys usually have 33 bytes, with the first byte being `02` or `03` depending on the key's parity (whether it's even or odd). However, for addresses in OP_NET:
-   - The **first byte (`02` or `03`) is removed**.
-   - The result is a **32-byte** address, which is the key without the initial prefix byte.
-
-#### Why This Matters:
-- This approach is part of the address optimization process in OP_NET and must be considered when handling or generating public keys for use as addresses.
-- If you are working with raw public keys, you must ensure they are in the tweaked and compressed format, and that the `02` or `03` byte is omitted.
+- **Compressed Format**: Only the compressed part of the public key is used. Compressed public keys usually have 33 bytes, with the first byte being `02` or `03` depending on the key's parity (whether it's even or odd). However, for addresses in OP_NET contracts are:
+   - The result is a **32-byte** address, which represent the **tweaked compressed public key**.
 
 #### Example:
 A compressed public key in standard format:
 ```
-02c6047f9441ed7d6d3045406e95c07cd85a5228b3943a54436f2ed191df9de590
+033c16c1ac8d578f275782b00d4b3f9987807ee6918c87a2d91bb657be50f5da67
 ```
 In OP_NET, this key would be represented as:
 ```
-c6047f9441ed7d6d3045406e95c07cd85a5228b3943a54436f2ed191df9de590
+924f69b135468e490f6ffa203535a2386a712732c05a0314f9e44e7973ca2ca4
 ```
-This **32-byte version** is used to create an address.
+This **32-byte version** is used in OP_NET contracts.
 
 ---
 
